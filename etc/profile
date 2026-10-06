@@ -1,0 +1,13 @@
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin
+export HOME=/root
+export HISTFILE=/dev/null
+
+E=$(printf '\033')
+export PS1="${E}[1;32m[\W]${E}[0m# "
+
+alias off='poweroff -f'
+alias rb='reboot'
+alias rs='reboot -f'
+alias ll='ls -l'
+
+cd /root 2>/dev/null

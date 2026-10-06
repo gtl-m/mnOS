@@ -1,0 +1,17 @@
+#!/bin/sh
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin
+
+/bin/mount -a
+
+hostname -F /etc/hostname
+
+ifconfig lo 127.0.0.1 up 2>/dev/null
+
+mkdir -p /var/log /var/run /var/lock /tmp
+chmod 1777 /tmp
+
+sleep 1
+for t in /dev/ttyS0 /dev/tty0; do
+	printf '\033[H\033[2J' > "$t" 2>/dev/null
+	mneofetch > "$t" 2>/dev/null
+done
