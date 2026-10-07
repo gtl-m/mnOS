@@ -9,7 +9,7 @@ A minimal Linux distribution built from scratch: **Linux 6.13.3 + busybox + GRUB
 ```text
                   _____   ____                                               mnOS
                  /\  __`\/\  _`\                                             ---------------------------
-  ___ ___     ___\ \ \/\ \ \,\L\_\                                           OS:      mnOS 1.1 (GNU/Linux)
+  ___ ___     ___\ \ \/\ \ \,\L\_\                                           OS:      mnOS 1.2 (GNU/Linux)
 /' __` __`\ /' _ `\ \ \ \ \/_\__ \                                           Kernel:  6.13.3
 /\ \/\ \/\ \/\ \/\ \ \ \_\ \/\ \L\ \                                         Uptime:  3s
 \ \_\ \_\ \_\ \_\ \_\ \_____\ `\____\                                        Shell:   busybox sh
@@ -35,10 +35,10 @@ A minimal Linux distribution built from scratch: **Linux 6.13.3 + busybox + GRUB
 
 ```bash
 # graphical (GRUB menu + VGA console)
-qemu-system-x86_64 -enable-kvm -m 512 -cdrom mnOSv1.1.iso
+qemu-system-x86_64 -enable-kvm -m 512 -cdrom mnOSv1.2.iso
 
 # serial console (interact right in your terminal)
-qemu-system-x86_64 -enable-kvm -m 512 -cdrom mnOSv1.1.iso -nographic
+qemu-system-x86_64 -enable-kvm -m 512 -cdrom mnOSv1.2.iso -nographic
 ```
 
 ## Build
@@ -46,7 +46,7 @@ qemu-system-x86_64 -enable-kvm -m 512 -cdrom mnOSv1.1.iso -nographic
 ### One-shot build
 
 ```bash
-./build.sh          # repack initramfs and produce ../mnOSv1.1.iso
+./build.sh          # repack initramfs and produce ../mnOSv1.2.iso
 ```
 
 Requires `grub-mkrescue`, `cpio`, `gzip`, and the kernel's `gen_init_cpio`
@@ -138,7 +138,7 @@ menuentry "mnOS" {
 }
 EOF
 
-grub-mkrescue -o mnOSv1.1.iso staging/
+grub-mkrescue -o mnOSv1.2.iso staging/
 ```
 
 ## Layout

@@ -11,7 +11,7 @@
 set -e
 
 ROOT=$(cd "$(dirname "$0")" && pwd)
-VERSION=1.1
+VERSION=1.2
 OUT=${OUT:-$(dirname "$ROOT")/mnOSv${VERSION}.iso}
 KERNEL_SRC=${KERNEL_SRC:-$HOME/kernel/linux-6.13.3}
 GEN_INIT_CPIO=${GEN_INIT_CPIO:-$KERNEL_SRC/usr/gen_init_cpio}

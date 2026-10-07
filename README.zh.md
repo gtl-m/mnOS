@@ -9,7 +9,7 @@
 ```text
                   _____   ____                                               mnOS
                  /\  __`\/\  _`\                                             ---------------------------
-  ___ ___     ___\ \ \/\ \ \,\L\_\                                           OS:      mnOS 1.1 (GNU/Linux)
+  ___ ___     ___\ \ \/\ \ \,\L\_\                                           OS:      mnOS 1.2 (GNU/Linux)
 /' __` __`\ /' _ `\ \ \ \ \/_\__ \                                           Kernel:  6.13.3
 /\ \/\ \/\ \/\ \/\ \ \ \_\ \/\ \L\ \                                         Uptime:  3s
 \ \_\ \_\ \_\ \_\ \_\ \_____\ `\____\                                        Shell:   busybox sh
@@ -35,10 +35,10 @@
 
 ```bash
 # 图形模式（GRUB 菜单 + VGA 控制台）
-qemu-system-x86_64 -enable-kvm -m 512 -cdrom mnOSv1.1.iso
+qemu-system-x86_64 -enable-kvm -m 512 -cdrom mnOSv1.2.iso
 
 # 串口模式（终端里直接交互）
-qemu-system-x86_64 -enable-kvm -m 512 -cdrom mnOSv1.1.iso -nographic
+qemu-system-x86_64 -enable-kvm -m 512 -cdrom mnOSv1.2.iso -nographic
 ```
 
 ## 构建
@@ -46,7 +46,7 @@ qemu-system-x86_64 -enable-kvm -m 512 -cdrom mnOSv1.1.iso -nographic
 ### 一键构建
 
 ```bash
-./build.sh          # 重新打包 initramfs 并生成 ../mnOSv1.1.iso
+./build.sh          # 重新打包 initramfs 并生成 ../mnOSv1.2.iso
 ```
 
 依赖：`grub-mkrescue`、`cpio`、`gzip`，以及内核源码里的 `gen_init_cpio`
@@ -136,7 +136,7 @@ menuentry "mnOS" {
 }
 EOF
 
-grub-mkrescue -o mnOSv1.1.iso staging/
+grub-mkrescue -o mnOSv1.2.iso staging/
 ```
 
 ## 目录结构
