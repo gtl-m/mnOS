@@ -20,10 +20,10 @@
 
 ```bash
 # 图形模式（GRUB 菜单 + VGA 控制台）
-qemu-system-x86_64 -enable-kvm -m 512 -cdrom mnOSv1.2.iso
+qemu-system-x86_64 -enable-kvm -m 512 -cdrom mnOSv1.3.iso
 
 # 串口模式（终端里直接交互）
-qemu-system-x86_64 -enable-kvm -m 512 -cdrom mnOSv1.2.iso -nographic
+qemu-system-x86_64 -enable-kvm -m 512 -cdrom mnOSv1.3.iso -nographic
 ```
 
 ## 构建
@@ -31,7 +31,7 @@ qemu-system-x86_64 -enable-kvm -m 512 -cdrom mnOSv1.2.iso -nographic
 ### 一键构建
 
 ```bash
-./build.sh          # 重新打包 initramfs 并生成 ../mnOSv1.2.iso
+./build.sh          # 重新打包 initramfs 并生成 ../mnOSv1.3.iso
 ```
 
 依赖：`grub-mkrescue`、`cpio`、`gzip`，以及内核源码里的 `gen_init_cpio`
@@ -121,7 +121,7 @@ menuentry "mnOS" {
 }
 EOF
 
-grub-mkrescue -o mnOSv1.2.iso staging/
+grub-mkrescue -o mnOSv1.3.iso staging/
 ```
 
 ## 目录结构
