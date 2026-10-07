@@ -52,8 +52,9 @@ echo "==> root filesystem archive"
   find . \
 	-path ./boot -prune -o \
 	-path ./.git -prune -o \
+	-path ./assets -prune -o \
 	-name build.sh -prune -o \
-	-name README.md -prune -o \
+	-name 'README*' -prune -o \
 	-print | cpio --owner 0:0 -H newc -o --quiet ) > "$WORK/tree.cpio"
 
 echo "==> initramfs (device cpio + rootfs, concatenated)"

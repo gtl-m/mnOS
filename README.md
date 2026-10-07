@@ -1,6 +1,10 @@
 # mnOS
 
-一个从零构建的最小 Linux 发行版：**Linux 6.13.3 + busybox + GRUB**，完整的 FHS 目录树，打包为可直接启动的 ISO（BIOS + UEFI 双引导），开机会显示一张彩色的系统信息卡片。
+[English](README.md) | [中文](README.zh.md)
+
+A minimal Linux distribution built from scratch: **Linux 6.13.3 + busybox + GRUB**, a complete FHS tree, shipped as a bootable ISO (BIOS + UEFI) that greets you with a colorful system-info card.
+
+![mnOS boot screen](assets/screenshot.png)
 
 ```text
                   _____   ____                                               mnOS
@@ -12,52 +16,52 @@
  \/_/\/_/\/_/\/_/\/_/\/_____/\/_____/                                        CPU:     1 (QEMU Virtual CPU version 2.5+)
                                                                               Memory:  72M / 467M
                                                                               IP:      127.0.0.1
-                                                                              Disk:    22.9M
+                                                                              Disk:    4.8M
 
 [~]#
 ```
 
-## 特性
+## Features
 
-- 完整 FHS 目录结构（`/bin /etc /usr /var /proc /sys ...`）
-- busybox 用户空间，400+ applet（sh、vi、top、grep、awk...）
-- 开机自动进入 shell（无登录），启动日志结束后**清屏并显示系统信息卡片**
-- 彩色提示符 `[\W]#`，以及快捷命令 `off`（关机）`rb`（重启）`ll`（列文件）
-- GRUB 菜单与内核 framebuffer 同为 **1280×720（16:9）**
-- 串口 / VGA 双控制台输出，`ls`、`mneofetch` 等命令两边都能正常显示
-- 静态根文件系统打包，启动快（约 3 秒到 shell）
+- Complete FHS layout (`/bin /etc /usr /var /proc /sys ...`)
+- busybox userland with 400+ applets (sh, vi, top, grep, awk, ...)
+- Auto-login shell: once the boot logs settle it **clears the screen and prints a system-info card**
+- Colored prompt `[\W]#` plus shortcuts `off` (poweroff), `rb` (reboot), `ll` (ls -l)
+- GRUB menu and kernel framebuffer both at **1280×720 (16:9)**
+- Dual console output (serial + VGA): commands like `ls` and `mneofetch` render on both
+- Single packed rootfs in initramfs, fast boot (~3 s to shell)
 
-## 运行
-
-```bash
-# 图形模式（GRUB 菜单 + VGA 控制台）
-qemu-system-x86_64 -enable-kvm -m 512 -cdrom mnOS.iso
-
-# 串口模式（终端里直接交互）
-qemu-system-x86_64 -enable-kvm -m 512 -cdrom mnOS.iso -nographic
-```
-
-## 构建
-
-### 一键构建
+## Run
 
 ```bash
-./build.sh          # 重新打包 initramfs 并生成 ../mnOSv1.1.iso
+# graphical (GRUB menu + VGA console)
+qemu-system-x86_64 -enable-kvm -m 512 -cdrom mnOSv1.1.iso
+
+# serial console (interact right in your terminal)
+qemu-system-x86_64 -enable-kvm -m 512 -cdrom mnOSv1.1.iso -nographic
 ```
 
-依赖：`grub-mkrescue`、`cpio`、`gzip`，以及内核源码里的 `gen_init_cpio`
-（可用 `GEN_INIT_CPIO=/path/to/gen_init_cpio` 覆盖，`OUT=...` 指定输出路径，
-`KERNEL_SRC=...` 指定内核源码目录）。
+## Build
 
-### 前置组件（内核 / busybox）
+### One-shot build
 
-#### 1. 内核
+```bash
+./build.sh          # repack initramfs and produce ../mnOSv1.1.iso
+```
+
+Requires `grub-mkrescue`, `cpio`, `gzip`, and the kernel's `gen_init_cpio`
+(override with `GEN_INIT_CPIO=/path/to/gen_init_cpio`; `OUT=...` sets the output
+path; `KERNEL_SRC=...` sets the kernel source dir).
+
+### Prerequisites (kernel / busybox)
+
+#### 1. Kernel
 
 ```bash
 git clone --depth=1 -b v6.13.3 https://github.com/torvalds/linux.git
 cd linux
-make olddefconfig          # 关键项: BLK_DEV_INITRD, DEVTMPFS, VT, DRM_BOCHS,
-                            # FRAMEBUFFER_CONSOLE, SERIAL_8250_CONSOLE, ISO9660_FS
+make olddefconfig          # key options: BLK_DEV_INITRD, DEVTMPFS, VT, DRM_BOCHS,
+                           # FRAMEBUFFER_CONSOLE, SERIAL_8250_CONSOLE, ISO9660_FS
 make -j$(nproc)
 cp arch/x86/boot/bzImage ../
 ```
@@ -67,12 +71,12 @@ cp arch/x86/boot/bzImage ../
 ```bash
 git clone https://git.busybox.net/busybox
 cd busybox
-make defconfig             # 动态链接（CONFIG_STATIC is not set）
+make defconfig             # dynamic linking (CONFIG_STATIC is not set)
 make -j$(nproc)
 make CONFIG_PREFIX=../mnOS install
 ```
 
-根文件系统需要带上 busybox 依赖的动态库（glibc）：
+The rootfs also needs the glibc libraries busybox depends on:
 
 ```bash
 mkdir -p mnOS/lib/x86_64-linux-gnu
@@ -83,9 +87,10 @@ printf '/lib/x86_64-linux-gnu\n/usr/lib/x86_64-linux-gnu\n' > mnOS/etc/ld.so.con
 ldconfig -r mnOS
 ```
 
-#### 3. initramfs（无需 root）
+#### 3. initramfs (no root needed)
 
-设备节点不用 `mknod`，用内核自带的 `gen_init_cpio` 写进 cpio 头即可：
+Device nodes are written straight into the cpio header with the kernel's
+`gen_init_cpio` — no `mknod`, no root:
 
 ```bash
 cat > devspec <<'EOF'
@@ -103,14 +108,15 @@ nod /dev/ptmx     0666 0 0 c 5 2
 EOF
 linux/usr/gen_init_cpio devspec > dev.cpio
 
-# 两个归档拼接：设备节点在前，文件系统在后（内核支持拼接 cpio）
+# concatenate two archives: devices first, filesystem second (the kernel
+# understands concatenated cpio)
 cd mnOS
 find . -path ./boot -prune -o -path ./.git -prune -o -print | cpio --owner 0:0 -H newc -o > ../tree.cpio
 cd ..
 cat dev.cpio tree.cpio | gzip -9 > mnOS/boot/initramfs.cpio.gz
 ```
 
-#### 4. 打包 ISO
+#### 4. Build the ISO
 
 ```bash
 mkdir -p staging/boot/grub
@@ -132,36 +138,38 @@ menuentry "mnOS" {
 }
 EOF
 
-grub-mkrescue -o mnOS.iso staging/
+grub-mkrescue -o mnOSv1.1.iso staging/
 ```
 
-## 目录结构
+## Layout
 
 ```text
 mnOS/
-├── init            # PID 1：挂载 proc/sys/devtmpfs/pts 后 exec /sbin/init
-├── bin/            # busybox 及 applet 符号链接（含 mneofetch 信息卡片）
-├── sbin/           # init、getty 等系统命令
+├── init            # PID 1: mount proc/sys/devtmpfs/pts, then exec /sbin/init
+├── bin/            # busybox + applet symlinks (includes the mneofetch card)
+├── sbin/           # init, getty, ...
 ├── etc/
-│   ├── inittab     # sysinit + 双控制台 shell
-│   ├── init.d/rcS  # 挂载文件系统 → 等待日志静默 → 清屏 → 输出信息卡片
-│   ├── profile     # 彩色 PS1、快捷命令 alias
+│   ├── inittab     # sysinit + dual-console shell
+│   ├── init.d/rcS  # mount fs → wait for logs to settle → clear → print the card
+│   ├── profile     # colored PS1, shortcut aliases
 │   └── ...
 ├── boot/           # bzImage + initramfs.cpio.gz
-├── lib/, lib64/    # glibc 运行库与动态链接器
-└── proc/ sys/ dev/ ...  # 标准 FHS 空目录（运行时挂载）
+├── assets/         # README screenshot
+├── build.sh        # one-shot build script
+├── lib/, lib64/    # glibc runtime and dynamic loader
+└── proc/ sys/ dev/ ...  # standard FHS dirs (mounted at runtime)
 ```
 
-## 技术要点
+## Technical notes
 
-| 问题 | 解决方式 |
-|------|----------|
-| 非 root 无法 `mknod` | 用内核的 `gen_init_cpio` 生成含设备节点的 cpio |
-| 提供 `/init` 后内核不再自动挂 devtmpfs | 在 `/init` 里手动挂载 proc/sysfs/devtmpfs |
-| `/dev/console` 指向哪个控制台 | 取决于 `console=` 参数顺序，`ttyS0` 放最后 |
-| DRM 忽略 GRUB 的 `gfxpayload` 分辨率 | 用 `video=Virtual-1:1280x720` 强制指定 |
-| GRUB 主题整段失效 | 剔除 `terminal-*` 字段（会导致主题解析失败） |
-| 拼接 cpio 被当作普通文件打进归档 | 分别生成归档后 `cat` 拼接，不要混入 `find` 管道 |
+| Problem | Solution |
+|---------|----------|
+| Can't `mknod` without root | use the kernel's `gen_init_cpio` to emit device nodes into the cpio |
+| Kernel stops auto-mounting devtmpfs once `/init` exists | mount proc/sysfs/devtmpfs manually in `/init` |
+| Which console `/dev/console` points to | determined by the order of `console=` args; put `ttyS0` last |
+| DRM ignores GRUB's `gfxpayload` resolution | force it with `video=Virtual-1:1280x720` |
+| GRUB theme silently breaks | drop the `terminal-*` fields (they make theme parsing fail) |
+| Concatenated cpio swallowed as a regular file | generate the archives separately and `cat` them; don't pipe into `find` |
 
 ## License
 
