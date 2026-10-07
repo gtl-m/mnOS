@@ -20,10 +20,10 @@
 
 ```bash
 # 图形模式（GRUB 菜单 + VGA 控制台）
-qemu-system-x86_64 -enable-kvm -m 512 -cdrom mnOSv1.4.iso
+qemu-system-x86_64 -enable-kvm -m 512 -cdrom mnOSv1.5.iso
 
 # 串口模式（终端里直接交互）
-qemu-system-x86_64 -enable-kvm -m 512 -cdrom mnOSv1.4.iso -nographic
+qemu-system-x86_64 -enable-kvm -m 512 -cdrom mnOSv1.5.iso -nographic
 ```
 
 ## 构建
@@ -31,7 +31,7 @@ qemu-system-x86_64 -enable-kvm -m 512 -cdrom mnOSv1.4.iso -nographic
 ### 一键构建
 
 ```bash
-./build.sh          # 重新打包 initramfs 并生成 ../mnOSv1.4.iso
+./build.sh          # 重新打包 initramfs 并生成 ../mnOSv1.5.iso
 ```
 
 依赖：`grub-mkrescue`、`cpio`、`gzip`，以及内核源码里的 `gen_init_cpio`
@@ -121,7 +121,7 @@ menuentry "mnOS" {
 }
 EOF
 
-grub-mkrescue -o mnOSv1.4.iso staging/
+grub-mkrescue -o mnOSv1.5.iso staging/
 ```
 
 ## 目录结构
@@ -154,6 +154,13 @@ mnOS/
 | GRUB 主题整段失效 | 剔除 `terminal-*` 字段（会导致主题解析失败） |
 | 拼接 cpio 被当作普通文件打进归档 | 分别生成归档后 `cat` 拼接，不要混入 `find` 管道 |
 
-## License
+## 许可证
 
-[GPL-3.0](LICENSE)
+mnOS 自有的代码（`init` 进程、`build.sh`、`etc/` 下的启动脚本以及
+`bin/mneofetch`）采用 **GPL-3.0-or-later** —— 见 [LICENSE](LICENSE)。
+
+mnOS 镜像以**聚合**形式分发：其中捆绑了多个第三方软件，各自适用其原有
+许可，主要包括 Linux 与 BusyBox（GPL-2.0-only）、glibc（LGPL-2.1-or-later）、
+GRUB 与 nano（GPL-3.0-or-later）、Vim（Vim License）、Python（PSF License）
+以及 tcc（LGPL-2.1）。完整清单、上游源码及"对应源码"获取方式见
+[NOTICE](NOTICE)。整个镜像不作为一个整体重新授权。

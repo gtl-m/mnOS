@@ -1,5 +1,7 @@
 #!/bin/sh
 # mnOS system info card
+# Copyright (C) 2026 gtl-m
+# SPDX-License-Identifier: GPL-3.0-or-later
 
 E=$(printf '\033')
 G="${E}[1;32m"; C="${E}[1;36m"; Y="${E}[1;33m"; W="${E}[1;37m"; N="${E}[0m"
@@ -41,7 +43,7 @@ pad='                                      '
 
 printf '%b%s%b%b  %bmnOS%b\n' "$C" "$logo1" "$N" "$pad" "$C" "$N"
 printf '%b%s%b%b  %b%s%b\n' "$C" "$logo2" "$N" "$pad" "$W" "---------------------------" "$N"
-printf '%b%s%b%b  %b%-9s%bmnOS 1.4 (GNU/Linux)\n' "$C" "$logo3" "$N" "$pad" "$Y" "OS:" "$N"
+printf '%b%s%b%b  %b%-9s%bmnOS 1.5 (GNU/Linux)\n' "$C" "$logo3" "$N" "$pad" "$Y" "OS:" "$N"
 printf '%b%s%b%b  %b%-9s%b%s\n' "$C" "$logo4" "$N" "$pad" "$Y" "Kernel:" "$N" "$kver"
 printf '%b%s%b%b  %b%-9s%b%s\n' "$C" "$logo5" "$N" "$pad" "$Y" "Uptime:" "$N" "$uptime_s"
 printf '%b%s%b%b  %b%-9s%b%s\n' "$C" "$logo6" "$N" "$pad" "$Y" "Shell:" "$N" "busybox sh"

@@ -1,0 +1,53 @@
+mnOS
+====
+
+Copyright (C) 2026 gtl-m <https://github.com/gtl-m>
+
+mnOS's own code -- the `init` process, `build.sh`, the startup scripts under
+`etc/` and `bin/mneofetch` -- is free software: you can redistribute it and/or
+modify it under the terms of the GNU General Public License as published by the
+Free Software Foundation, either version 3 of the License, or (at your option)
+any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program.  If not, see <https://www.gnu.org/licenses/>.
+
+The full text of the GNU General Public License version 3 is in the file
+LICENSE.  SPDX-License-Identifier: GPL-3.0-or-later
+
+
+Third-party components
+======================
+
+The mnOS ISO is a bootable image that *aggregates* the independent works listed
+below.  Each is covered by its own license and remains the copyright of its
+respective authors.  The image is distributed as an aggregate and is **not**
+relicensed as a single work under the mnOS license above.
+
+  Component              Version       License              Upstream source
+  ---------------------  ------------  -------------------  ------------------------------
+  Linux kernel           6.13.3        GPL-2.0-only         https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+  BusyBox                1.39.0.git    GPL-2.0-only         https://git.busybox.net/busybox
+  GNU C Library (glibc)  2.31          LGPL-2.1-or-later    https://www.gnu.org/software/libc/
+  GNU GRUB               2.04          GPL-3.0-or-later     https://www.gnu.org/software/grub/
+  Vim                    8.1           Vim License          https://github.com/vim/vim
+  GNU nano               4.8           GPL-3.0-or-later     https://www.nano-editor.org/
+  Python                 3.8.10        PSF License          https://www.python.org/
+  tcc (Tiny C Compiler)  0.9.27        LGPL-2.1             https://bellard.org/tcc/
+
+Please refer to the LICENSE / COPYING files shipped inside each component or to
+the upstream projects above for the exact terms that apply to them.
+
+
+Obtaining Corresponding Source
+==============================
+
+For the GNU-family components (the Linux kernel, BusyBox, glibc, GRUB, nano),
+the Corresponding Source is available from the upstream projects listed above.
+`build.sh` and the "Build" section of README.md document how the kernel and
+BusyBox are configured and compiled, so that the exact binaries shipped in the
+mnOS image can be reproduced from source.

@@ -1,6 +1,8 @@
 #!/bin/sh
-#
 # mnOS build script
+# Copyright (C) 2026 gtl-m
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
 #   rootfs (this directory)  ->  boot/initramfs.cpio.gz  ->  mnOSv<ver>.iso
 #
 # usage:  ./build.sh
@@ -11,7 +13,7 @@
 set -e
 
 ROOT=$(cd "$(dirname "$0")" && pwd)
-VERSION=1.4
+VERSION=1.5
 OUT=${OUT:-$(dirname "$ROOT")/mnOSv${VERSION}.iso}
 KERNEL_SRC=${KERNEL_SRC:-$HOME/kernel/linux-6.13.3}
 GEN_INIT_CPIO=${GEN_INIT_CPIO:-$KERNEL_SRC/usr/gen_init_cpio}

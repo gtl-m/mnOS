@@ -1,4 +1,7 @@
 #!/bin/sh
+# mnOS /init -- PID 1
+# Copyright (C) 2026 gtl-m
+# SPDX-License-Identifier: GPL-3.0-or-later
 export PATH=/bin:/sbin:/usr/bin:/usr/sbin
 
 mount -t proc proc /proc

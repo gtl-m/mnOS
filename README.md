@@ -20,10 +20,10 @@ A minimal Linux distribution built from scratch: **Linux 6.13.3 + busybox + GRUB
 
 ```bash
 # graphical (GRUB menu + VGA console)
-qemu-system-x86_64 -enable-kvm -m 512 -cdrom mnOSv1.4.iso
+qemu-system-x86_64 -enable-kvm -m 512 -cdrom mnOSv1.5.iso
 
 # serial console (interact right in your terminal)
-qemu-system-x86_64 -enable-kvm -m 512 -cdrom mnOSv1.4.iso -nographic
+qemu-system-x86_64 -enable-kvm -m 512 -cdrom mnOSv1.5.iso -nographic
 ```
 
 ## Build
@@ -31,7 +31,7 @@ qemu-system-x86_64 -enable-kvm -m 512 -cdrom mnOSv1.4.iso -nographic
 ### One-shot build
 
 ```bash
-./build.sh          # repack initramfs and produce ../mnOSv1.4.iso
+./build.sh          # repack initramfs and produce ../mnOSv1.5.iso
 ```
 
 Requires `grub-mkrescue`, `cpio`, `gzip`, and the kernel's `gen_init_cpio`
@@ -123,7 +123,7 @@ menuentry "mnOS" {
 }
 EOF
 
-grub-mkrescue -o mnOSv1.4.iso staging/
+grub-mkrescue -o mnOSv1.5.iso staging/
 ```
 
 ## Layout
@@ -158,4 +158,13 @@ mnOS/
 
 ## License
 
-[GPL-3.0](LICENSE)
+mnOS's own code (the `init` process, `build.sh`, the startup scripts under
+`etc/` and `bin/mneofetch`) is licensed under **GPL-3.0-or-later** — see
+[LICENSE](LICENSE).
+
+The mnOS image is distributed as an **aggregate**: it bundles third-party
+software under their own licenses, notably Linux and BusyBox (GPL-2.0-only),
+glibc (LGPL-2.1-or-later), GRUB and nano (GPL-3.0-or-later), Vim (Vim License),
+Python (PSF License) and tcc (LGPL-2.1). See [NOTICE](NOTICE) for the full list,
+upstream sources and how to obtain the Corresponding Source. The image is not
+relicensed as a whole.
