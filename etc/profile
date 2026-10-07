@@ -1,6 +1,7 @@
 export PATH=/bin:/sbin:/usr/bin:/usr/sbin
 export HOME=/root
-export HISTFILE=/dev/null
+export HISTFILE=/run/ash_history
+export HISTSIZE=200
 
 E=$(printf '\033')
 export PS1="${E}[1;32m[\W]${E}[0m# "

@@ -3,14 +3,16 @@
 一个从零构建的最小 Linux 发行版：**Linux 6.13.3 + busybox + GRUB**，完整的 FHS 目录树，打包为可直接启动的 ISO（BIOS + UEFI 双引导），开机会显示一张彩色的系统信息卡片。
 
 ```text
-                  _____   ____                          mnOS
-                 /\  __`\/\  _`\                        ---------------------------
-  ___ ___     ___\ \ \/\ \ \,\L\_\                      OS:      mnOS 1.0 (GNU/Linux)
-/' __` __`\ /' _ `\ \ \ \ \/_\__ \                      Kernel:  6.13.3
-/\ \/\ \/\ \/\ \/\ \ \ \_\ \/\ \L\ \                    Uptime:  3s
-\ \_\ \_\ \_\ \_\ \_\ \_____\ `\____\                    Shell:   busybox sh
- \/_/\/_/\/_/\/_/\/_/\/_____/\/_____/                   CPU:     1 (QEMU Virtual CPU version 2.5+)
-                                                        Memory:  32M / 467M
+                  _____   ____                                               mnOS
+                 /\  __`\/\  _`\                                             ---------------------------
+  ___ ___     ___\ \ \/\ \ \,\L\_\                                           OS:      mnOS 1.1 (GNU/Linux)
+/' __` __`\ /' _ `\ \ \ \ \/_\__ \                                           Kernel:  6.13.3
+/\ \/\ \/\ \/\ \/\ \ \ \_\ \/\ \L\ \                                         Uptime:  3s
+\ \_\ \_\ \_\ \_\ \_\ \_____\ `\____\                                        Shell:   busybox sh
+ \/_/\/_/\/_/\/_/\/_/\/_____/\/_____/                                        CPU:     1 (QEMU Virtual CPU version 2.5+)
+                                                                              Memory:  72M / 467M
+                                                                              IP:      127.0.0.1
+                                                                              Disk:    22.9M
 
 [~]#
 ```
@@ -91,7 +93,7 @@ linux/usr/gen_init_cpio devspec > dev.cpio
 
 # 两个归档拼接：设备节点在前，文件系统在后（内核支持拼接 cpio）
 cd mnOS
-find . -path ./boot -prune -o -print | cpio --owner 0:0 -H newc -o > ../tree.cpio
+find . -path ./boot -prune -o -path ./.git -prune -o -print | cpio --owner 0:0 -H newc -o > ../tree.cpio
 cd ..
 cat dev.cpio tree.cpio | gzip -9 > mnOS/boot/initramfs.cpio.gz
 ```
