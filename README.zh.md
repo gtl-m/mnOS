@@ -6,21 +6,6 @@
 
 ![mnOS 启动画面](assets/screenshot.png)
 
-```text
-                  _____   ____                                               mnOS
-                 /\  __`\/\  _`\                                             ---------------------------
-  ___ ___     ___\ \ \/\ \ \,\L\_\                                           OS:      mnOS 1.2 (GNU/Linux)
-/' __` __`\ /' _ `\ \ \ \ \/_\__ \                                           Kernel:  6.13.3
-/\ \/\ \/\ \/\ \/\ \ \ \_\ \/\ \L\ \                                         Uptime:  3s
-\ \_\ \_\ \_\ \_\ \_\ \_____\ `\____\                                        Shell:   busybox sh
- \/_/\/_/\/_/\/_/\/_/\/_____/\/_____/                                        CPU:     1 (QEMU Virtual CPU version 2.5+)
-                                                                              Memory:  72M / 467M
-                                                                              IP:      127.0.0.1
-                                                                              Disk:    4.8M
-
-[~]#
-```
-
 ## 特性
 
 - 完整 FHS 目录结构（`/bin /etc /usr /var /proc /sys ...`）
