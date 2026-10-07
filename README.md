@@ -20,10 +20,10 @@ A minimal Linux distribution built from scratch: **Linux 6.13.3 + busybox + GRUB
 
 ```bash
 # graphical (GRUB menu + VGA console)
-qemu-system-x86_64 -enable-kvm -m 512 -cdrom mnOSv1.3.iso
+qemu-system-x86_64 -enable-kvm -m 512 -cdrom mnOSv1.4.iso
 
 # serial console (interact right in your terminal)
-qemu-system-x86_64 -enable-kvm -m 512 -cdrom mnOSv1.3.iso -nographic
+qemu-system-x86_64 -enable-kvm -m 512 -cdrom mnOSv1.4.iso -nographic
 ```
 
 ## Build
@@ -31,7 +31,7 @@ qemu-system-x86_64 -enable-kvm -m 512 -cdrom mnOSv1.3.iso -nographic
 ### One-shot build
 
 ```bash
-./build.sh          # repack initramfs and produce ../mnOSv1.3.iso
+./build.sh          # repack initramfs and produce ../mnOSv1.4.iso
 ```
 
 Requires `grub-mkrescue`, `cpio`, `gzip`, and the kernel's `gen_init_cpio`
@@ -123,7 +123,7 @@ menuentry "mnOS" {
 }
 EOF
 
-grub-mkrescue -o mnOSv1.3.iso staging/
+grub-mkrescue -o mnOSv1.4.iso staging/
 ```
 
 ## Layout
