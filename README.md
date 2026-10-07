@@ -39,7 +39,19 @@ qemu-system-x86_64 -enable-kvm -m 512 -cdrom mnOS.iso -nographic
 
 ## 构建
 
-### 1. 内核
+### 一键构建
+
+```bash
+./build.sh          # 重新打包 initramfs 并生成 ../mnOSv1.1.iso
+```
+
+依赖：`grub-mkrescue`、`cpio`、`gzip`，以及内核源码里的 `gen_init_cpio`
+（可用 `GEN_INIT_CPIO=/path/to/gen_init_cpio` 覆盖，`OUT=...` 指定输出路径，
+`KERNEL_SRC=...` 指定内核源码目录）。
+
+### 前置组件（内核 / busybox）
+
+#### 1. 内核
 
 ```bash
 git clone --depth=1 -b v6.13.3 https://github.com/torvalds/linux.git
@@ -50,7 +62,7 @@ make -j$(nproc)
 cp arch/x86/boot/bzImage ../
 ```
 
-### 2. busybox
+#### 2. busybox
 
 ```bash
 git clone https://git.busybox.net/busybox
@@ -71,7 +83,7 @@ printf '/lib/x86_64-linux-gnu\n/usr/lib/x86_64-linux-gnu\n' > mnOS/etc/ld.so.con
 ldconfig -r mnOS
 ```
 
-### 3. initramfs（无需 root）
+#### 3. initramfs（无需 root）
 
 设备节点不用 `mknod`，用内核自带的 `gen_init_cpio` 写进 cpio 头即可：
 
@@ -98,7 +110,7 @@ cd ..
 cat dev.cpio tree.cpio | gzip -9 > mnOS/boot/initramfs.cpio.gz
 ```
 
-### 4. 打包 ISO
+#### 4. 打包 ISO
 
 ```bash
 mkdir -p staging/boot/grub
