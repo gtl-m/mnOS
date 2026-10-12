@@ -32,6 +32,7 @@ def f16_to_f32(raw):
 
 
 def dequant(a, typ):
+    """Decode supported GGUF tensor encodings to flattened float32 values."""
     if typ == 0:
         return a.astype(np.float32).reshape(-1)
     if typ == 8:  # Q8_0: 32/block
@@ -96,8 +97,10 @@ def dequant(a, typ):
 
 
 class MiniMind:
+    """Load GGUF model weights for the CPU inference implementation."""
 
     def __init__(self, path):
+        # Tensor type and original shape metadata are needed to decode each weight.
         info, tens, ttypes, tdims = gguf_reader.load_gguf(path)
         self.info = info
         self.w = {}
@@ -110,6 +113,7 @@ class MiniMind:
             else:
                 flat = dequant(raw, ttypes[name])
             if len(dims) == 2:
+                # Restore the matrix axis order expected by the inference matmuls.
                 self.w[name] = flat.reshape((dims[1], dims[0]))   # (out, in)
             else:
                 self.w[name] = flat.reshape(dims)

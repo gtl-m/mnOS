@@ -1,3 +1,5 @@
+"""Read GGUF metadata and tensors for the bundled MiniMind2 model."""
+
 import struct
 import numpy as np
 
@@ -9,6 +11,7 @@ GGML_TYPE = {
 SZ = {0: 4, 1: 2}
 
 def load_gguf(path):
+    """Return (metadata, tensors, tensor types, tensor dimensions) from a GGUF file."""
     with open(path, "rb") as f:
         fb = f.read()
     p = 0
@@ -34,6 +37,7 @@ def load_gguf(path):
         return take(LEN()).decode("utf-8", "replace")
     def rstr_u32():
         return take(u32()).decode("utf-8", "replace")
+    # Metadata entries and tensor descriptors precede the tensor data.
     n_tensors = LEN()
     n_kv = LEN()
     info = {}
@@ -71,6 +75,7 @@ def load_gguf(path):
         elif t == 11: info[k] = struct.unpack("<q", take(8))[0]
         elif t == 12: info[k] = struct.unpack("<d", take(8))[0]
         else: raise NotImplementedError("kv type %d" % t)
+    # Tensor dimension widths differ between GGUF v3 and earlier versions.
     dw = 8 if ver >= 3 else 4
     tinf = []
     for _ in range(n_tensors):
@@ -80,7 +85,9 @@ def load_gguf(path):
         typ = u32()
         off = u64()
         tinf.append((name, dims, typ, off))
+    # This reader assumes the default 32-byte alignment for tensor data.
     data_start = (p + 31) & ~31
+    # Storage bytes per element, including packed block-quantized formats.
     QBYTE = {0: 4, 1: 2, 6: 22 / 32, 7: 24 / 32, 8: 34 / 32, 9: 36 / 32,
              10: 72 / 256, 11: 100 / 256, 12: 144 / 256, 13: 176 / 256,
              14: 210 / 256, 15: 290 / 256, 18: 19 / 16}
@@ -103,6 +110,7 @@ def load_gguf(path):
             arr = np.frombuffer(fb, dtype=np.float16, count=nelem,
                                 offset=data_start + off).reshape(dims).astype(np.float32)
         else:
+            # Quantized tensors remain packed for the model loader to decode.
             arr = np.frombuffer(fb, dtype=np.uint8, count=nbytes,
                                 offset=data_start + off)
         tensors[name] = arr
@@ -110,7 +118,8 @@ def load_gguf(path):
 
 if __name__ == "__main__":
     import sys
-    info, tensors = load_gguf(sys.argv[1])
+    # The CLI prints two values; model callers also need type and shape metadata.
+    info, tensors, _, _ = load_gguf(sys.argv[1])
     print("--- meta ---")
     for k in sorted(info):
         v = info[k]
